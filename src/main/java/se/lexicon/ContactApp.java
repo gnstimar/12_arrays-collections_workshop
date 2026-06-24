@@ -22,8 +22,7 @@ public class ContactApp {
                     addNewContact();
                     break;
                 case 2:
-                    // TODO Search By Name;
-                    IO.println("Search By Name");
+                    searchByName();
                     break;
                 case 3:
                     // TODO Modify Contact;
@@ -109,8 +108,10 @@ public class ContactApp {
     public static void addNewContact() {
         IO.println("--- Add New Contact ---");
         String name = IO.readln("Name: ");
+        scanner.nextLine();
         String phoneNumber = readPhone("Phone number: ");
         contacts.put(name, phoneNumber);
+        IO.println(name + " is added to the contacts.");
     }
 
     public static String readPhone(String message) {
@@ -127,6 +128,21 @@ public class ContactApp {
             } catch (InputMismatchException e) {
                 IO.println("ERROR: Invalid input! Please enter number only.");
                 scanner.nextLine();
+            }
+        }
+    }
+
+    public static void searchByName() {
+        IO.println("--- Search Contact By Name ---");
+        String name = IO.readln("Name: ");
+        if (contacts == null || contacts.isEmpty()) {
+            IO.println("You have no contacts to search from.");
+        }
+        for (String contactName : contacts.keySet()) {
+            if (contactName.equalsIgnoreCase(name)) {
+                IO.println(contacts.get(contactName));
+            } else {
+                IO.println("There is no contact with this name.");
             }
         }
     }
