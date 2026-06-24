@@ -19,8 +19,7 @@ public class ContactApp {
             IO.println();
             switch (option) {
                 case 1:
-                    // TODO addNewContact();
-                    IO.println("Add New Contact");
+                    addNewContact();
                     break;
                 case 2:
                     // TODO Search By Name;
@@ -103,6 +102,31 @@ public class ContactApp {
             for (String name : contacts.keySet()) {
                 System.out.println(i + ". " + name + ": " + contacts.get(name));
                 i++;
+            }
+        }
+    }
+
+    public static void addNewContact() {
+        IO.println("--- Add New Contact ---");
+        String name = IO.readln("Name: ");
+        String phoneNumber = readPhone("Phone number: ");
+        contacts.put(name, phoneNumber);
+    }
+
+    public static String readPhone(String message) {
+        while (true) {
+            try {
+                IO.print(message);
+                String phoneNumber = scanner.nextLine();
+                String regex = "^\\+?[0-9. ()-]{7,20}$"; // 7-15 digits, optional + in the beginning, it allows -, space, dots, parenthesis as separators
+                if (phoneNumber.matches(regex)) {
+                    return phoneNumber;
+                } else {
+                    IO.println("Error: The phone number is incorrect! Try again. ");
+                }
+            } catch (InputMismatchException e) {
+                IO.println("ERROR: Invalid input! Please enter number only.");
+                scanner.nextLine();
             }
         }
     }
