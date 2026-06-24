@@ -2,12 +2,14 @@ package se.lexicon;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class ContactApp {
     public static Scanner scanner = new Scanner(System.in);
-    static boolean shouldContinue = true;
-    static String[] functionalities = {"Add New Contact", "Search By Name", "Modify Contact", "Remove Contact By Name", "Set Favourite By Name", "Show All Contact", "Exit"};
-    static int option = 0;
+    public static boolean shouldContinue = true;
+    public static String[] functionalities = {"Add New Contact", "Search By Name", "Modify Contact", "Remove Contact By Name", "Set Favourite By Name", "Show All Contacts", "Exit"};
+    public static int option = 0;
+    public static TreeMap<String, String> contacts = new TreeMap<>();
 
 
     void main() {
@@ -17,7 +19,7 @@ public class ContactApp {
             IO.println();
             switch (option) {
                 case 1:
-                    // TODO Add New Contact;
+                    // TODO addNewContact();
                     IO.println("Add New Contact");
                     break;
                 case 2:
@@ -37,8 +39,7 @@ public class ContactApp {
                     IO.println("Set Favourite By Name");
                     break;
                 case 6:
-                    // TODO Show All Contact;
-                    IO.println("Show All Contact");
+                    showAllContacts();
                     break;
                 case 7:
                     IO.println("Goodbye!");
@@ -94,4 +95,15 @@ public class ContactApp {
         }
     }
 
+    private static void showAllContacts() {
+        if (contacts == null || contacts.isEmpty()) {
+            IO.println("No contacts.");
+        } else {
+            int i = 1;
+            for (String name : contacts.keySet()) {
+                System.out.println(i + ". " + name + ": " + contacts.get(name));
+                i++;
+            }
+        }
+    }
 }
