@@ -28,11 +28,10 @@ public class ContactApp {
                     modifyByName();
                     break;
                 case 4:
-                    // TODO Remove Contact By Name;
-                    IO.println("Remove Contact By Name");
+                    removeByName();
                     break;
                 case 5:
-                    // TODO Set Favourite By Name;
+                    // TODO Set Favourite By Name - will be added in an other version
                     IO.println("Set Favourite By Name");
                     break;
                 case 6:
@@ -184,6 +183,20 @@ public class ContactApp {
         contacts.remove(originalName);
         contacts.put(finalName, finalPhone);
         IO.println("Contact updated successfully.");
+    }
+
+    public static void removeByName() {
+        IO.println("--- Remove Contact By Name ---");
+        scanner.nextLine();
+        String name = IO.readln("Name: ");
+
+        if (!contacts.containsKey(name)) {
+            IO.println("Error: Contact not found.");
+            return;
+        }
+
+        contacts.remove(name);
+        IO.println("Contact was successfully removed.");
     }
 
 }
