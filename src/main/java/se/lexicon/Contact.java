@@ -28,7 +28,9 @@ public class Contact {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        if (firstName != null && !firstName.isEmpty()) {
+            this.firstName = firstName;
+        }
     }
 
     public String getLastName() {
@@ -36,7 +38,9 @@ public class Contact {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        if (lastName != null && !lastName.isEmpty()) {
+            this.lastName = lastName;
+        }
     }
 
     public String getFullName() {
@@ -48,7 +52,9 @@ public class Contact {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        if (phone != null && !phone.isEmpty()) {
+            this.phone = phone;
+        }
     }
 
     public String getEmail() {

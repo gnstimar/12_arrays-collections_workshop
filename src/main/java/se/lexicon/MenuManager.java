@@ -1,6 +1,7 @@
 package se.lexicon;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -25,7 +26,7 @@ public class MenuManager {
             switch (choice) {
                 case 1 -> addNewContact();
                 case 2 -> listAllContacts();
-                case 3 -> IO.println("Modify");
+                case 3 -> modifyContact();
                 case 4 -> IO.println("Search");
                 case 5 -> IO.println("Delete");
                 case 6 -> IO.println("Favourite");
@@ -53,6 +54,7 @@ public class MenuManager {
             try {
                 IO.print(message);
                 int number = SCANNER.nextInt();
+                SCANNER.nextLine();
                 if (number >= 1 && number <= FUNCTIONALITIES.length) {
                     return number;
                 } else {
@@ -66,45 +68,12 @@ public class MenuManager {
     }
 
     private void addNewContact() {
-        SCANNER.nextLine();
         IO.println("\n--------------------------------------------------------------------------------");
         IO.println("                        *** ADD NEW CONTACT ***");
         IO.println("--------------------------------------------------------------------------------");
-        boolean isValid = true;
-        String firstName = ""; // shall i write anything into that?????????????????????
-        while (isValid) {
-            IO.print("First name: ");
-            firstName = SCANNER.nextLine().trim();
-            if (Validator.validateName(firstName)) {
-                isValid = false;
-            } else {
-                IO.println("ERROR: Name cannot be empty.");
-            }
-        }
-
-        isValid=true;
-        String lastName = "";
-        while (isValid) {
-            IO.print("Last name: ");
-            lastName = SCANNER.nextLine().trim();
-            if (Validator.validateName(lastName)) {
-                isValid = false;
-            } else {
-                IO.println("ERROR: Name cannot be empty.");
-            }
-        }
-
-        isValid=true;
-        String phone = "";
-        while (isValid) {
-            IO.print("Phone number: ");
-            phone = SCANNER.nextLine().trim();
-            if (Validator.validatePhone(phone)) {
-                isValid = false;
-            } else {
-                IO.println("ERROR: Phone must be between 7-20 digits. (It can contain hyphen, space, dots, parenthesis as separators.)");
-            }
-        }
+        String firstName = readInName("First name: ",false);
+        String lastName = readInName("Last name: ",false);
+        String phone = readInPhone("Phone: ", false);
 
         Contact newContact = new Contact(firstName, lastName, phone);
         REPOSITORY.addContact(newContact);
@@ -123,14 +92,122 @@ public class MenuManager {
             return;
         }
 
-        System.out.printf("%-36s | %-20s | %-15s%n", "UUID", "Name", "Phone");
+        printContacts(allContacts);
+    }
+
+    private void modifyContact() {
+        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("                        *** MODIFY CONTACT ***");
         IO.println("--------------------------------------------------------------------------------");
-        for (Contact contact : allContacts.values()) {
-            System.out.printf("%-36s | %-20s | %-15s%n",
+        IO.print("Type name: ");
+        String searchName = SCANNER.nextLine().trim();
+        List<Contact> foundContacts = REPOSITORY.findOrContainsName(searchName);
+        if (foundContacts.isEmpty()) {
+            IO.println("There is no name that would contain this word.");
+        } else if (foundContacts.size() == 1) {
+            IO.println("There is only one match found. You can modify it.");
+            Contact contactToModify = foundContacts.getFirst();
+            executeModification(contactToModify);
+        } else {
+            IO.println("There are " + foundContacts.size() + " contacts that contain this word in their names:");
+            printContacts(foundContacts);
+            int contactNumberToModify = readInt("Enter the number of the contact you want to modify: ", foundContacts.size());
+            Contact contactToModify = foundContacts.get(contactNumberToModify - 1);
+            executeModification(contactToModify);
+        }
+    }
+
+    private void printContacts(Map<String, Contact> contactsToPrint) {
+        int counter = 0;
+        System.out.printf("%-39s | %-20s | %-15s%n", "UUID", "Name", "Phone");
+        IO.println("--------------------------------------------------------------------------------");
+        for (Contact contact : contactsToPrint.values()) {
+            System.out.printf("%-1d. %-36s | %-20s | %-15s%n",
+                    counter = counter + 1,
                     contact.getUuid(),
                     contact.getFullName(),
                     contact.getPhone());
         }
         IO.println("--------------------------------------------------------------------------------");
+    }
+
+    private void printContacts(List<Contact> contactsToPrint) {
+        int counter = 0;
+        System.out.printf(" %-39s | %-20s | %-15s%n", "UUID", "Name", "Phone");
+        IO.println("--------------------------------------------------------------------------------");
+        for (Contact contact : contactsToPrint) {
+            System.out.printf("%-1d. %-36s | %-20s | %-15s%n",
+                    counter = counter + 1,
+                    contact.getUuid(),
+                    contact.getFullName(),
+                    contact.getPhone());
+        }
+        IO.println("--------------------------------------------------------------------------------");
+    }
+
+    private int readInt(String message, int max) {
+        while (true) {
+            try {
+                IO.print(message);
+                int number = SCANNER.nextInt();
+                SCANNER.nextLine();
+                if (number >= 1 && number <= max) {
+                    return number;
+                } else {
+                    IO.println("Error: The number is out of range! It must be between 1 and " + max + ".");
+                }
+            } catch (InputMismatchException e) {
+                IO.println("ERROR: Invalid input! Please enter number only.");
+                SCANNER.nextLine();
+            }
+        }
+    }
+
+    private void executeModification(Contact contact) {
+        IO.print("First Name (hit enter to keep \"" + contact.getFirstName() + "\"): ");
+        String firstName = readInName("First name: ",true);
+        IO.print("Last Name (hit enter to keep \"" + contact.getLastName() + "\"): ");
+        String lastName = readInName("Last name: ",true);
+        IO.print("Phone (hit enter to keep \"" + contact.getPhone() + "\"): ");
+        String phone = readInName("Phone: ", true);
+        contact.setFirstName(firstName);
+        contact.setLastName(lastName);
+        contact.setPhone(phone);
+        REPOSITORY.updateContact(contact);
+        IO.println("Contact updated successfully.");
+    }
+
+    private String readInName(String message, boolean allowedToBeEmpty) {
+        boolean isValid = true;
+        String name = "";
+        while (isValid) {
+            IO.print(message);
+            name = SCANNER.nextLine().trim();
+            if (allowedToBeEmpty && name.isEmpty()) {
+                break;
+            } else if (Validator.validateName(name)) {
+                isValid = false;
+            } else {
+                IO.println("ERROR: Name cannot be empty.");
+            }
+        }
+        return name;
+    }
+
+    private String readInPhone(String message, boolean allowedToBeEmpty) {
+        boolean isValid = true;
+        String phone = "";
+        while (isValid) {
+            IO.print(message);
+            phone = SCANNER.nextLine().trim();
+            if (allowedToBeEmpty && phone.isEmpty()) {
+                break;
+            } else if (Validator.validatePhone(phone)) {
+                isValid = false;
+            } else {
+                IO.println("ERROR: Phone must be between 7-20 digits. (It can contain hyphen, space, dots, parenthesis as separators.)");
+            }
+        }
+        return phone;
     }
 }
