@@ -56,7 +56,7 @@ public class MenuManager {
                 if (number >= 1 && number <= FUNCTIONALITIES.length) {
                     return number;
                 } else {
-                    IO.println("Error: The number is out of range! It must be between 1 and " + FUNCTIONALITIES.length + ". ");
+                    IO.println("ERROR: The number is out of range! It must be between 1 and " + FUNCTIONALITIES.length + ". ");
                 }
             } catch (InputMismatchException e) {
                 IO.println("ERROR: Invalid input! Please enter number only.");
@@ -70,13 +70,42 @@ public class MenuManager {
         IO.println("\n--------------------------------------------------------------------------------");
         IO.println("                        *** ADD NEW CONTACT ***");
         IO.println("--------------------------------------------------------------------------------");
+        boolean isValid = true;
+        String firstName = ""; // shall i write anything into that?????????????????????
+        while (isValid) {
+            IO.print("First name: ");
+            firstName = SCANNER.nextLine().trim();
+            if (Validator.validateName(firstName)) {
+                isValid = false;
+            } else {
+                IO.println("ERROR: Name cannot be empty.");
+            }
+        }
 
-        IO.print("First name: ");
-        String firstName = SCANNER.nextLine().trim();
-        IO.print("Last name: ");
-        String lastName = SCANNER.nextLine().trim();
-        IO.print("Phone number: ");
-        String phone = SCANNER.nextLine().trim();
+        isValid=true;
+        String lastName = "";
+        while (isValid) {
+            IO.print("Last name: ");
+            lastName = SCANNER.nextLine().trim();
+            if (Validator.validateName(lastName)) {
+                isValid = false;
+            } else {
+                IO.println("ERROR: Name cannot be empty.");
+            }
+        }
+
+        isValid=true;
+        String phone = "";
+        while (isValid) {
+            IO.print("Phone number: ");
+            phone = SCANNER.nextLine().trim();
+            if (Validator.validatePhone(phone)) {
+                isValid = false;
+            } else {
+                IO.println("ERROR: Phone must be between 7-20 digits. (It can contain hyphen, space, dots, parenthesis as separators.)");
+            }
+        }
+
         Contact newContact = new Contact(firstName, lastName, phone);
         REPOSITORY.addContact(newContact);
         IO.println("Contact added successfully.");
