@@ -25,8 +25,7 @@ public class ContactApp {
                     searchByName();
                     break;
                 case 3:
-                    // TODO Modify Contact;
-                    IO.println("Modify Contact");
+                    modifyByName();
                     break;
                 case 4:
                     // TODO Remove Contact By Name;
@@ -109,16 +108,19 @@ public class ContactApp {
         IO.println("--- Add New Contact ---");
         String name = IO.readln("Name: ");
         scanner.nextLine();
-        String phoneNumber = readPhone("Phone number: ");
+        String phoneNumber = readPhone("Phone number: ", false);
         contacts.put(name, phoneNumber);
         IO.println(name + " is added to the contacts.");
     }
 
-    public static String readPhone(String message) {
+    public static String readPhone(String message, boolean allowedToBeEmpty) {
         while (true) {
             try {
                 IO.print(message);
                 String phoneNumber = scanner.nextLine();
+                if (phoneNumber.isBlank() && allowedToBeEmpty) {
+                    return phoneNumber;
+                }
                 String regex = "^\\+?[0-9. ()-]{7,20}$"; // 7-15 digits, optional + in the beginning, it allows -, space, dots, parenthesis as separators
                 if (phoneNumber.matches(regex)) {
                     return phoneNumber;
@@ -127,7 +129,6 @@ public class ContactApp {
                 }
             } catch (InputMismatchException e) {
                 IO.println("ERROR: Invalid input! Please enter number only.");
-                scanner.nextLine();
             }
         }
     }
@@ -146,4 +147,43 @@ public class ContactApp {
             }
         }
     }
+
+    public static void modifyByName() {
+        IO.println("--- Modify Contact By Name ---");
+        scanner.nextLine();
+        String originalName = IO.readln("Name: ");
+
+        if (!contacts.containsKey(originalName)) {
+            IO.println("Error: Contact not found.");
+            return;
+        }
+
+        String originalPhoneNumber = contacts.get(originalName);
+
+        IO.print("Name (hit enter to keep \"" + originalName + "\" or type a new): ");
+        String inputName = scanner.nextLine();
+        String finalName;
+
+        if (inputName.isEmpty()) {
+            finalName = originalName;
+            IO.println("Name has not been changed.");
+        } else {
+            finalName = inputName;
+        }
+
+        String inputPhone = readPhone("Phone number (hit enter to keep \"" + originalPhoneNumber + "\" or type a new): ", true);
+        String finalPhone;
+
+        if (inputPhone.isEmpty()) {
+            finalPhone = originalPhoneNumber;
+            IO.println("Phone has not been changed.");
+        } else {
+            finalPhone = inputPhone;
+        }
+
+        contacts.remove(originalName);
+        contacts.put(finalName, finalPhone);
+        IO.println("Contact updated successfully.");
+    }
+
 }
