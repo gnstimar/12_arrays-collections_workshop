@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class ContactApp {
+public class ContactAppOld {
     public static Scanner scanner = new Scanner(System.in);
     public static boolean shouldContinue = true;
     public static String[] functionalities = {"Add New Contact", "Search By Name", "Modify Contact", "Remove Contact By Name", "Set Favourite By Name", "Show All Contacts", "Exit"};
@@ -120,7 +120,7 @@ public class ContactApp {
                 if (phoneNumber.isBlank() && allowedToBeEmpty) {
                     return phoneNumber;
                 }
-                String regex = "^\\+?[0-9. ()-]{7,20}$"; // 7-15 digits, optional + in the beginning, it allows -, space, dots, parenthesis as separators
+                String regex = "^\\+?[0-9. ()-]{7,20}$"; // 7-15 digits, optional + in the beginning, it allows -(hyphen), space, dots, parenthesis as separators
                 if (phoneNumber.matches(regex)) {
                     return phoneNumber;
                 } else {
