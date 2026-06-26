@@ -27,7 +27,7 @@ public class MenuManager {
                 case 1 -> addNewContact();
                 case 2 -> listAllContacts();
                 case 3 -> modifyContact();
-                case 4 -> IO.println("Search");
+                case 4 -> searchContact();
                 case 5 -> deleteContact();
                 case 6 -> IO.println("Favourite");
                 case 7 -> {
@@ -253,6 +253,22 @@ public class MenuManager {
             } else {
                 IO.println("Error: Invalid input! Please type 'yes' or 'no'.");
             }
+        }
+    }
+
+    private void searchContact() {
+        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("                        *** SEARCH CONTACT ***");
+        IO.println("--------------------------------------------------------------------------------");
+        IO.print("Type name: ");
+        String searchName = SCANNER.nextLine().trim();
+        List<Contact> foundContacts = REPOSITORY.findOrContainsName(searchName);
+        if (foundContacts.isEmpty()) {
+            IO.println("There is no name that would contain this word.");
+        } else {
+            IO.println("There are " + foundContacts.size() + " contacts that contain this word in their names:");
+            printContacts(foundContacts);
+
         }
     }
 }
