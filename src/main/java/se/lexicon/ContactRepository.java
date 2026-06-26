@@ -19,7 +19,7 @@ public class ContactRepository {
     public List<Contact> findOrContainsName(String searchName) {
         List<Contact> results = new ArrayList<>();
         for (Contact contact : contacts.values()) {
-            if (contact.getFullName().toLowerCase().contains(searchName)) {
+            if (contact.getFullName().toLowerCase().contains(searchName.toLowerCase())) {
                 results.add(contact);
             }
         }
