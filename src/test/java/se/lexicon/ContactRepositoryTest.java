@@ -89,4 +89,22 @@ public class ContactRepositoryTest {
         Assertions.assertEquals(0, result.size(), "There should be zero contact found.");
         Assertions.assertTrue(result.isEmpty(), "The result list should be empty.");
     }
+
+    @Test
+    @DisplayName("Test alphabetical sorting")
+    void sortAlphabetically() {
+        Contact contact1 = new Contact("Zackery", "Zucker", "12345678");
+        Contact contact2 = new Contact("Bennett", "Balbo", "23456789");
+        Contact contact3 = new Contact("Diana", "Dobermann", "023456780");
+        Contact contact4 = new Contact("Cecilia", "Talorman", "11112345678111");
+        contactRepository.addContact(contact1);
+        contactRepository.addContact(contact2);
+        contactRepository.addContact(contact3);
+        contactRepository.addContact(contact4);
+        List<Contact> result = contactRepository.getAllContactsSortedByFullName();
+        Assertions.assertEquals("Bennett Balbo", result.getFirst().getFullName(), "Bennet should be the first one");
+        Assertions.assertEquals("Cecilia Talorman", result.get(1).getFullName(), "Cecilia should be the first one");
+        Assertions.assertEquals("Diana Dobermann", result.get(2).getFullName(), "Diana should be the first one");
+        Assertions.assertEquals("Zackery Zucker", result.get(3).getFullName(), "Zackery should be the first one");
+    }
 }
