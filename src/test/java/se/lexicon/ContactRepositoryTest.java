@@ -45,4 +45,27 @@ public class ContactRepositoryTest {
         Assertions.assertEquals(0, result.size(), "There should be zero contact found.");
         Assertions.assertTrue(result.isEmpty(), "The result list should be empty.");
     }
+
+    @Test
+    @DisplayName("Positive: Update one contact's last name and phone number")
+    void updateOneContact() {
+        contactRepository.addContact(contact);
+        contact.setLastName("melvinupdated");
+        contact.setPhone("3333333333");
+        contactRepository.updateContact(contact);
+        List<Contact> result = contactRepository.getAllContactsSortedByFullName();
+        Assertions.assertEquals(1, result.size(), "There should be only one contact found.");
+        Assertions.assertEquals("melvinupdated", result.getFirst().getLastName(), "We should see \"melvinupdated\".");
+        Assertions.assertEquals("3333333333", result.getFirst().getPhone(), "We should see \"3333333333\".");
+    }
+
+    @Test
+    @DisplayName("Negative: Trying to update a contact that does not exist")
+    void updateNonExistingContact() {
+        Contact newContact = new Contact("John", "Hoywer", "2345678");
+        contactRepository.updateContact(newContact);
+        List<Contact> result = contactRepository.getAllContactsSortedByFullName();
+        Assertions.assertEquals(1, result.size(), "There should be one contact found. (we put the new contact into the Map)");
+        Assertions.assertEquals(newContact, result.getFirst(), "We should only get back \"John Hoywer\".");
+    }
 }

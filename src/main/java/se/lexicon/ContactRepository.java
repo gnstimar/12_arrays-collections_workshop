@@ -27,6 +27,10 @@ public class ContactRepository {
     }
 
     public void updateContact(Contact updatedContact) {
+//          // It only updated those contacts that are already in the Map
+//        if (!contacts.containsKey(updatedContact.getUuid())) {
+//            return;
+//        }
         contacts.put(updatedContact.getUuid(), updatedContact);
     }
 
