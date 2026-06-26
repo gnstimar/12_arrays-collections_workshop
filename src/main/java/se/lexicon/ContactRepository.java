@@ -19,7 +19,7 @@ public class ContactRepository {
     public List<Contact> findOrContainsName(String searchName) {
         List<Contact> results = new ArrayList<>();
         for (Contact contact : contacts.values()) {
-            if (contact.getFullName().toLowerCase().contains(searchName)) {
+            if (contact.getFullName().toLowerCase().contains(searchName.toLowerCase())) {
                 results.add(contact);
             }
         }
@@ -27,6 +27,10 @@ public class ContactRepository {
     }
 
     public void updateContact(Contact updatedContact) {
+//          // It only updated those contacts that are already in the Map
+//        if (!contacts.containsKey(updatedContact.getUuid())) {
+//            return;
+//        }
         contacts.put(updatedContact.getUuid(), updatedContact);
     }
 
