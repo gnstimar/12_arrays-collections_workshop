@@ -29,7 +29,7 @@ public class MenuManager {
                 case 3 -> modifyContact();
                 case 4 -> searchContact();
                 case 5 -> deleteContact();
-                case 6 -> IO.println("Favourite");
+                case 6 -> IO.println("Favourite"); // TODO setFavourite()
                 case 7 -> {
                     IO.println("Goodbye!");
                     isRunning = false;
@@ -81,7 +81,7 @@ public class MenuManager {
     }
 
     private void listAllContacts() {
-        Map<String, Contact> allContacts = REPOSITORY.getAllContacts();
+        List< Contact> allContacts = REPOSITORY.getAllContactsSortedByFullName();
 
         IO.println("\n--------------------------------------------------------------------------------");
         IO.println("                       *** LIST ALL CONTACTS ***");
@@ -115,20 +115,6 @@ public class MenuManager {
             Contact contactToModify = foundContacts.get(contactNumberToModify - 1);
             executeModification(contactToModify);
         }
-    }
-
-    private void printContacts(Map<String, Contact> contactsToPrint) {
-        int counter = 0;
-        System.out.printf("%-39s | %-20s | %-15s%n", "UUID", "Name", "Phone");
-        IO.println("--------------------------------------------------------------------------------");
-        for (Contact contact : contactsToPrint.values()) {
-            System.out.printf("%-1d. %-36s | %-20s | %-15s%n",
-                    counter = counter + 1,
-                    contact.getUuid(),
-                    contact.getFullName(),
-                    contact.getPhone());
-        }
-        IO.println("--------------------------------------------------------------------------------");
     }
 
     private void printContacts(List<Contact> contactsToPrint) {
