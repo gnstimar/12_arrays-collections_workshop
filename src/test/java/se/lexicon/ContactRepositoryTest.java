@@ -3,6 +3,7 @@ package se.lexicon;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 public class ContactRepositoryTest {
@@ -67,5 +68,25 @@ public class ContactRepositoryTest {
         List<Contact> result = contactRepository.getAllContactsSortedByFullName();
         Assertions.assertEquals(1, result.size(), "There should be one contact found. (we put the new contact into the Map)");
         Assertions.assertEquals(newContact, result.getFirst(), "We should only get back \"John Hoywer\".");
+    }
+
+    @Test
+    @DisplayName("Positive: Delete one contact")
+    void deleteOneContact() {
+        contactRepository.addContact(contact);
+        contactRepository.deleteContact(contact.getUuid());
+        List<Contact> result = contactRepository.getAllContactsSortedByFullName();
+        Assertions.assertEquals(0, result.size(), "There should be zero contact found.");
+        Assertions.assertTrue(result.isEmpty(), "The result list should be empty.");
+    }
+
+    @Test
+    @DisplayName("Negative: Trying to delete a contact that does not exist")
+    void deleteNonExistingContact() {
+        Contact newContact = new Contact("John", "Hoywer", "2345678");
+        contactRepository.deleteContact(newContact.getUuid());
+        List<Contact> result = contactRepository.getAllContactsSortedByFullName();
+        Assertions.assertEquals(0, result.size(), "There should be zero contact found.");
+        Assertions.assertTrue(result.isEmpty(), "The result list should be empty.");
     }
 }
