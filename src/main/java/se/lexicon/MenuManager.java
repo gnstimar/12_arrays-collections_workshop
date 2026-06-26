@@ -28,7 +28,7 @@ public class MenuManager {
                 case 2 -> listAllContacts();
                 case 3 -> modifyContact();
                 case 4 -> IO.println("Search");
-                case 5 -> IO.println("Delete");
+                case 5 -> deleteContact();
                 case 6 -> IO.println("Favourite");
                 case 7 -> {
                     IO.println("Goodbye!");
@@ -71,8 +71,8 @@ public class MenuManager {
         IO.println("\n--------------------------------------------------------------------------------");
         IO.println("                        *** ADD NEW CONTACT ***");
         IO.println("--------------------------------------------------------------------------------");
-        String firstName = readInName("First name: ",false);
-        String lastName = readInName("Last name: ",false);
+        String firstName = readInName("First name: ", false);
+        String lastName = readInName("Last name: ", false);
         String phone = readInPhone("Phone: ", false);
 
         Contact newContact = new Contact(firstName, lastName, phone);
@@ -165,9 +165,9 @@ public class MenuManager {
 
     private void executeModification(Contact contact) {
         IO.print("First Name (hit enter to keep \"" + contact.getFirstName() + "\"): ");
-        String firstName = readInName("First name: ",true);
+        String firstName = readInName("First name: ", true);
         IO.print("Last Name (hit enter to keep \"" + contact.getLastName() + "\"): ");
-        String lastName = readInName("Last name: ",true);
+        String lastName = readInName("Last name: ", true);
         IO.print("Phone (hit enter to keep \"" + contact.getPhone() + "\"): ");
         String phone = readInName("Phone: ", true);
         contact.setFirstName(firstName);
@@ -209,5 +209,50 @@ public class MenuManager {
             }
         }
         return phone;
+    }
+
+    private void deleteContact() {
+        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("                        *** DELETE CONTACT ***");
+        IO.println("--------------------------------------------------------------------------------");
+        IO.print("Type name: ");
+        String searchName = SCANNER.nextLine().trim();
+        List<Contact> foundContacts = REPOSITORY.findOrContainsName(searchName);
+        if (foundContacts.isEmpty()) {
+            IO.println("There is no name that would contain this word.");
+        } else if (foundContacts.size() == 1) {
+            IO.println("There is only one match found.");
+            printContacts(foundContacts);
+            IO.println("Are you sure you want to delete \"" + foundContacts.getFirst().getFullName() + "\"? (yes/no)");
+            boolean shouldDelete = askToDelete("Continue? (yes/no): ");
+            if (shouldDelete) {
+                Contact contactToDelete = foundContacts.getFirst();
+                REPOSITORY.deleteContact(contactToDelete.getUuid());
+            } else {
+                return;
+            }
+        } else {
+            IO.println("There are " + foundContacts.size() + " contacts that contain this word in their names:");
+            printContacts(foundContacts);
+            int contactNumberToDelete = readInt("Enter the number of the contact you want to delete: ", foundContacts.size());
+            Contact contactToDelete = foundContacts.get(contactNumberToDelete - 1);
+            REPOSITORY.deleteContact(contactToDelete.getUuid());
+        }
+        IO.println("Contact deleted successfully.");
+    }
+
+    public boolean askToDelete(String message) {
+        while (true) {
+            IO.print(message);
+            String answer = SCANNER.next();
+            if (answer.equalsIgnoreCase("yes")) {
+                return true;
+            } else if (answer.equalsIgnoreCase("no")) {
+                IO.println("Contact was not deleted.");
+                return false;
+            } else {
+                IO.println("Error: Invalid input! Please type 'yes' or 'no'.");
+            }
+        }
     }
 }

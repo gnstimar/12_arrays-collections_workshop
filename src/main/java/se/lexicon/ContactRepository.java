@@ -29,4 +29,8 @@ public class ContactRepository {
     public void updateContact(Contact updatedContact) {
         contacts.put(updatedContact.getUuid(), updatedContact);
     }
+
+    public void deleteContact(String Uuid) {
+        contacts.remove(Uuid);
+    }
 }
