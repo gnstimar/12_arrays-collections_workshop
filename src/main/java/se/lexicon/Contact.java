@@ -1,6 +1,7 @@
 package se.lexicon;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Contact {
     private final String UUID;
@@ -90,5 +91,17 @@ public class Contact {
                 ", isFavourite=" + isFavourite +
                 ", birthday=" + birthday +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Contact contact = (Contact) o;
+        return Objects.equals(UUID, contact.UUID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(UUID);
     }
 }
