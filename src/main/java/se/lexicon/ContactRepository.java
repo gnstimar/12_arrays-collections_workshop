@@ -1,15 +1,15 @@
 package se.lexicon;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ContactRepository {
     private Map<String, Contact> contacts = new TreeMap<>();
+    Comparator<Contact> compareByFullName = Comparator.comparing(Contact::getFullName, String.CASE_INSENSITIVE_ORDER);
 
-    public Map<String, Contact> getAllContacts() {
-        return contacts;
+    public List<Contact> getAllContactsSortedByFullName() {
+        List<Contact> sortedList = new ArrayList<>(contacts.values());
+        sortedList.sort(compareByFullName);
+        return sortedList;
     }
 
     public void addContact(Contact contact) {
