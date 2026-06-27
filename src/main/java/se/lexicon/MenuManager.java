@@ -29,7 +29,7 @@ public class MenuManager {
                 case 3 -> modifyContact();
                 case 4 -> searchContact();
                 case 5 -> deleteContact();
-                case 6 -> IO.println("Favourite"); // TODO setFavourite()
+                case 6 -> setFavourite();
                 case 7 -> {
                     REPOSITORY.saveContacts();
                     IO.println("Goodbye!");
@@ -41,13 +41,13 @@ public class MenuManager {
     }
 
     private void displayMenu() {
-        IO.println("\n================================================================================");
+        IO.println("\n==========================================================================================");
         IO.println("                                CONTACT APP");
-        IO.println("================================================================================");
+        IO.println("==========================================================================================");
         for (int i = 0; i < FUNCTIONALITIES.length; i++) {
             System.out.printf("%-1d. %-15s%n", i + 1, FUNCTIONALITIES[i]);
         }
-        IO.println("================================================================================");
+        IO.println("==========================================================================================");
     }
 
     private int readMenuItemNumber(String message) {
@@ -69,14 +69,15 @@ public class MenuManager {
     }
 
     private void addNewContact() {
-        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("\n------------------------------------------------------------------------------------------");
         IO.println("                        *** ADD NEW CONTACT ***");
-        IO.println("--------------------------------------------------------------------------------");
-        String firstName = readInName("First name: ", false);
-        String lastName = readInName("Last name: ", false);
+        IO.println("------------------------------------------------------------------------------------------");
+        String firstName = readInString("First name: ", false);
+        String lastName = readInString("Last name: ", false);
         String phone = readInPhone("Phone: ", false);
+        boolean isFavourite = readInYesOrNo("Favourite? (yes/no): ");
 
-        Contact newContact = new Contact(firstName, lastName, phone);
+        Contact newContact = new Contact(firstName, lastName, phone, isFavourite);
         REPOSITORY.addContact(newContact);
         IO.println("Contact added successfully.");
     }
@@ -84,9 +85,9 @@ public class MenuManager {
     private void listAllContacts() {
         List<Contact> allContacts = REPOSITORY.getAllContactsSortedByFullName();
 
-        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("-----------------------------------------------------------------------------------------");
         IO.println("                       *** LIST ALL CONTACTS ***");
-        IO.println("--------------------------------------------------------------------------------");
+        IO.println("-----------------------------------------------------------------------------------------");
 
         if (allContacts.isEmpty()) {
             IO.println("No contacts found.");
@@ -97,9 +98,9 @@ public class MenuManager {
     }
 
     private void modifyContact() {
-        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("-----------------------------------------------------------------------------------------");
         IO.println("                        *** MODIFY CONTACT ***");
-        IO.println("--------------------------------------------------------------------------------");
+        IO.println("-----------------------------------------------------------------------------------------");
         IO.print("Type name: ");
         String searchName = SCANNER.nextLine().trim();
         List<Contact> foundContacts = REPOSITORY.findOrContainsName(searchName);
@@ -120,16 +121,17 @@ public class MenuManager {
 
     private void printContacts(List<Contact> contactsToPrint) {
         int counter = 0;
-        System.out.printf(" %-39s | %-20s | %-15s%n", "UUID", "Name", "Phone");
-        IO.println("--------------------------------------------------------------------------------");
+        System.out.printf("%-39s | %-20s | %-15s | %-3s%n", "UUID", "Name", "Phone", "Fav");
+        IO.println("-----------------------------------------------------------------------------------------");
         for (Contact contact : contactsToPrint) {
-            System.out.printf("%-1d. %-36s | %-20s | %-15s%n",
+            System.out.printf("%-1d. %-36s | %-20s | %-15s | %-3s%n",
                     counter = counter + 1,
                     contact.getUuid(),
                     contact.getFullName(),
-                    contact.getPhone());
+                    contact.getPhone(),
+                    contact.isFavourite() ? "*" : "");
         }
-        IO.println("--------------------------------------------------------------------------------");
+        IO.println("-----------------------------------------------------------------------------------------");
     }
 
     private int readInt(String message, int max) {
@@ -152,19 +154,21 @@ public class MenuManager {
 
     private void executeModification(Contact contact) {
         IO.print("First Name (hit enter to keep \"" + contact.getFirstName() + "\"): ");
-        String firstName = readInName("First name: ", true);
+        String firstName = readInString("First name: ", true);
         IO.print("Last Name (hit enter to keep \"" + contact.getLastName() + "\"): ");
-        String lastName = readInName("Last name: ", true);
+        String lastName = readInString("Last name: ", true);
         IO.print("Phone (hit enter to keep \"" + contact.getPhone() + "\"): ");
-        String phone = readInName("Phone: ", true);
+        String phone = readInString("Phone: ", true);
+        boolean isFavourite = readInYesOrNo("Favourite (enter yes/no): ");
         contact.setFirstName(firstName);
         contact.setLastName(lastName);
         contact.setPhone(phone);
+        contact.setFavourite(isFavourite);
         REPOSITORY.updateContact(contact);
         IO.println("Contact updated successfully.");
     }
 
-    private String readInName(String message, boolean allowedToBeEmpty) {
+    private String readInString(String message, boolean allowedToBeEmpty) {
         boolean isValid = true;
         String name = "";
         while (isValid) {
@@ -211,7 +215,7 @@ public class MenuManager {
             IO.println("There is only one match found.");
             printContacts(foundContacts);
             IO.println("Are you sure you want to delete \"" + foundContacts.getFirst().getFullName() + "\"? (yes/no)");
-            boolean shouldDelete = askToDelete("Continue? (yes/no): ");
+            boolean shouldDelete = readInYesOrNo("Continue? (yes/no): ");
             if (shouldDelete) {
                 Contact contactToDelete = foundContacts.getFirst();
                 REPOSITORY.deleteContact(contactToDelete.getUuid());
@@ -228,7 +232,7 @@ public class MenuManager {
         IO.println("Contact deleted successfully.");
     }
 
-    public boolean askToDelete(String message) {
+    public boolean readInYesOrNo(String message) {
         while (true) {
             IO.print(message);
             String answer = SCANNER.next();
@@ -257,5 +261,28 @@ public class MenuManager {
             printContacts(foundContacts);
 
         }
+    }
+
+    public void setFavourite() {
+        IO.println("\n--------------------------------------------------------------------------------");
+        IO.println("                           *** SET FAVOURITE ***");
+        IO.println("--------------------------------------------------------------------------------");
+        IO.print("Type name: ");
+        String searchName = SCANNER.nextLine().trim();
+        List<Contact> foundContacts = REPOSITORY.findOrContainsName(searchName);
+        if (foundContacts.isEmpty()) {
+            IO.println("There is no name that would contain this word.");
+        } else if (foundContacts.size() == 1) {
+            IO.println("There is only one match found. You can set it as favourite.");
+            Contact contactToSetFavourite = foundContacts.getFirst();
+            REPOSITORY.setFavourite(contactToSetFavourite);
+        } else {
+            IO.println("There are " + foundContacts.size() + " contacts that contain this word in their names:");
+            printContacts(foundContacts);
+            int contactNumberToSetFavourite = readInt("Enter the number of the contact you want to modify: ", foundContacts.size());
+            Contact contactToSetFavourite = foundContacts.get(contactNumberToSetFavourite - 1);
+            REPOSITORY.setFavourite(contactToSetFavourite);
+        }
+        IO.println("Contact set as favourite successfully.");
     }
 }

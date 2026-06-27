@@ -13,18 +13,20 @@ public class Contact {
     private boolean isFavourite;
     private LocalDate birthday;
 
-    public Contact(String firstName, String lastName, String phone) {
+    public Contact(String firstName, String lastName, String phone, boolean isFavourite) {
         this.UUID = java.util.UUID.randomUUID().toString();
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.isFavourite = isFavourite;
     }
 
-    public Contact(String UUID, String firstName, String lastName, String phone) {
+    public Contact(String UUID, String firstName, String lastName, String phone, boolean isFavourite) {
         this.UUID = UUID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.isFavourite = isFavourite;
     }
 
     public String getUuid() {

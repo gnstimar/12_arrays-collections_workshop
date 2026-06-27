@@ -66,6 +66,8 @@ public class ContactRepository {
         oneLine.append(contact.getLastName());
         oneLine.append(";");
         oneLine.append(contact.getPhone());
+        oneLine.append(";");
+        oneLine.append(contact.isFavourite());
         return oneLine.toString();
     }
 
@@ -84,12 +86,17 @@ public class ContactRepository {
                 String firstName = values[1];
                 String lastName = values[2];
                 String phone = values[3];
-                Contact contact = new Contact(uuid, firstName, lastName, phone);
+                boolean isFavourite = values[4].equalsIgnoreCase("true") ? true : false;
+                Contact contact = new Contact(uuid, firstName, lastName, phone, isFavourite);
                 contacts.put(contact.getUuid(), contact);
             }
             IO.println("Contacts are successfully loaded from file.");
         } catch (IOException e) {
             IO.println("ERROR: could not load contacts from the file. " + e.getMessage());
         }
+    }
+
+    public void setFavourite(Contact contact) {
+        contact.setFavourite(true);
     }
 }
