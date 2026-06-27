@@ -20,6 +20,13 @@ public class Contact {
         this.phone = phone;
     }
 
+    public Contact(String UUID, String firstName, String lastName, String phone) {
+        this.UUID = UUID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+    }
+
     public String getUuid() {
         return UUID;
     }

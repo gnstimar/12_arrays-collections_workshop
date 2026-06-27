@@ -2,7 +2,6 @@ package se.lexicon;
 
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class MenuManager {
@@ -14,6 +13,7 @@ public class MenuManager {
     public MenuManager(ContactRepository repository) {
         this.REPOSITORY = repository;
         this.SCANNER = new Scanner(System.in);
+        this.REPOSITORY.importContactsFromFile();
     }
 
     public void start() {
@@ -31,6 +31,7 @@ public class MenuManager {
                 case 5 -> deleteContact();
                 case 6 -> IO.println("Favourite"); // TODO setFavourite()
                 case 7 -> {
+                    REPOSITORY.saveContacts();
                     IO.println("Goodbye!");
                     isRunning = false;
                 }
@@ -81,7 +82,7 @@ public class MenuManager {
     }
 
     private void listAllContacts() {
-        List< Contact> allContacts = REPOSITORY.getAllContactsSortedByFullName();
+        List<Contact> allContacts = REPOSITORY.getAllContactsSortedByFullName();
 
         IO.println("\n--------------------------------------------------------------------------------");
         IO.println("                       *** LIST ALL CONTACTS ***");
