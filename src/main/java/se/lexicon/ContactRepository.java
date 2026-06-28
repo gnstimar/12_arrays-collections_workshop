@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ContactRepository {
@@ -29,6 +30,7 @@ public class ContactRepository {
                 results.add(contact);
             }
         }
+        results.sort(compareByFullName);
         return results;
     }
 
@@ -68,6 +70,10 @@ public class ContactRepository {
         oneLine.append(contact.getPhone());
         oneLine.append(";");
         oneLine.append(contact.isFavourite());
+        oneLine.append(";");
+        oneLine.append(contact.getEmail());
+        oneLine.append(";");
+        oneLine.append(contact.getBirthday().toString());
         return oneLine.toString();
     }
 
@@ -87,7 +93,9 @@ public class ContactRepository {
                 String lastName = values[2];
                 String phone = values[3];
                 boolean isFavourite = values[4].equalsIgnoreCase("true") ? true : false;
-                Contact contact = new Contact(uuid, firstName, lastName, phone, isFavourite);
+                String email = values[5];
+                LocalDate birthday = LocalDate.parse(values[6]);
+                Contact contact = new Contact(uuid, firstName, lastName, phone, isFavourite, email, birthday);
                 contacts.put(contact.getUuid(), contact);
             }
             IO.println("Contacts are successfully loaded from file.");

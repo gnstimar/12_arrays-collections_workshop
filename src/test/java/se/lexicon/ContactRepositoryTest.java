@@ -4,11 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class ContactRepositoryTest {
     ContactRepository contactRepository = new ContactRepository();
-    Contact contact = new Contact("Anna", "Melvin", "1234567");
+    Contact contact = new Contact("Anna", "Melvin", "1234567", true, "email@mail.com", LocalDate.parse("1999-12-01"));
 
     @Test
     @DisplayName("Positive: Add one new contact to an empty Map")
@@ -32,7 +33,7 @@ public class ContactRepositoryTest {
     @DisplayName("Positive: Find a contact that contains the search word")
     void findOneContact() {
         contactRepository.addContact(contact);
-        Contact contact2 = new Contact("John", "Hoywer", "2345678");
+        Contact contact2 = new Contact("John", "Hoywer", "2345678", true, "email@mail.com", LocalDate.parse("1999-12-01"));
         contactRepository.addContact(contact2);
         List<Contact> result = contactRepository.findOrContainsName("Anna Melvin");
         Assertions.assertEquals(1, result.size(), "There should be only one contact found.");
@@ -63,7 +64,7 @@ public class ContactRepositoryTest {
     @Test
     @DisplayName("Negative: Trying to update a contact that does not exist")
     void updateNonExistingContact() {
-        Contact newContact = new Contact("John", "Hoywer", "2345678");
+        Contact newContact = new Contact("John", "Hoywer", "2345678", true, "email@mail.com", LocalDate.parse("1999-12-01"));
         contactRepository.updateContact(newContact);
         List<Contact> result = contactRepository.getAllContactsSortedByFullName();
         Assertions.assertEquals(1, result.size(), "There should be one contact found. (we put the new contact into the Map)");
@@ -83,7 +84,7 @@ public class ContactRepositoryTest {
     @Test
     @DisplayName("Negative: Trying to delete a contact that does not exist")
     void deleteNonExistingContact() {
-        Contact newContact = new Contact("John", "Hoywer", "2345678");
+        Contact newContact = new Contact("John", "Hoywer", "2345678", true, "email@mail.com", LocalDate.parse("1999-12-01"));
         contactRepository.deleteContact(newContact.getUuid());
         List<Contact> result = contactRepository.getAllContactsSortedByFullName();
         Assertions.assertEquals(0, result.size(), "There should be zero contact found.");
@@ -93,10 +94,10 @@ public class ContactRepositoryTest {
     @Test
     @DisplayName("Test alphabetical sorting")
     void sortAlphabetically() {
-        Contact contact1 = new Contact("Zackery", "Zucker", "12345678");
-        Contact contact2 = new Contact("Bennett", "Balbo", "23456789");
-        Contact contact3 = new Contact("Diana", "Dobermann", "023456780");
-        Contact contact4 = new Contact("Cecilia", "Talorman", "11112345678111");
+        Contact contact1 = new Contact("Zackery", "Zucker", "12345678", true, "email@mail.com", LocalDate.parse("1999-12-01"));
+        Contact contact2 = new Contact("Bennett", "Balbo", "23456789", false, "email2@mail.com", LocalDate.parse("1998-12-01"));
+        Contact contact3 = new Contact("Diana", "Dobermann", "023456780", false, "email3@mail.com", LocalDate.parse("1997-12-01"));
+        Contact contact4 = new Contact("Cecilia", "Talorman", "11112345678111", true, "email4@mail.com", LocalDate.parse("1996-12-01"));
         contactRepository.addContact(contact1);
         contactRepository.addContact(contact2);
         contactRepository.addContact(contact3);
