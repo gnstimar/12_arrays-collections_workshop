@@ -13,18 +13,24 @@ public class Contact {
     private boolean isFavourite;
     private LocalDate birthday;
 
-    public Contact(String firstName, String lastName, String phone) {
+    public Contact(String firstName, String lastName, String phone, boolean isFavourite, String email, LocalDate birthday) {
         this.UUID = java.util.UUID.randomUUID().toString();
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.isFavourite = isFavourite;
+        this.email = email;
+        this.birthday = birthday;
     }
 
-    public Contact(String UUID, String firstName, String lastName, String phone) {
+    public Contact(String UUID, String firstName, String lastName, String phone, boolean isFavourite, String email, LocalDate birthday) {
         this.UUID = UUID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.isFavourite = isFavourite;
+        this.email = email;
+        this.birthday = birthday;
     }
 
     public String getUuid() {
@@ -70,7 +76,9 @@ public class Contact {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if (email != null && !email.isEmpty()) {
+            this.email = email;
+        }
     }
 
     public boolean isFavourite() {
@@ -86,7 +94,9 @@ public class Contact {
     }
 
     public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
+        if (birthday != null) {
+            this.birthday = birthday;
+        }
     }
 
     @Override
